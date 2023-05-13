@@ -1,0 +1,6 @@
+name: paper-survival
+version: '${project.version}'
+main: me.scaffus.survival.Paper_survival
+api-version: 1.19
+load: STARTUP
+authors: [Scaffus]
