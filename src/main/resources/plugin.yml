@@ -1,0 +1,5 @@
+name: Survival
+version: '${project.version}'
+main: me.scaffus.survival.Survival
+api-version: 1.19
+load: STARTUP

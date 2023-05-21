@@ -1,0 +1,1 @@
+java -jar -Xms3072M -Xmx3072M paper-1_19_4-538.jar -nogui

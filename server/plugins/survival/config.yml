@@ -1,0 +1,92 @@
+prefix: "<gray><bold>[<reset><white>Vival<gray><bold>]"
+
+messages:
+  player_joined: "<italic><gold><player> <reset><yellow>joined the server!"
+  player_left: "<italic><gold><player> <reset><yellow>left the server!"
+  bank:
+    not_enough: "<italic><yellow>You do not have enough money in your account"
+    deposit_successful: "<italic><yellow>You deposited <coins>coins to your account"
+    withdraw_successful: "<italic><yellow>You withdrew <coins>coins from your account"
+
+menus:
+  defaults:
+    close:
+      material: BARRIER
+      name: "<red>Close"
+    background:
+      material: GRAY_STAINED_GLASS_PANE
+      name: ""
+#  amount:
+#    name: "<bold>Amount"
+#    size: 27
+#    slots:
+#      minus64:
+#        position: 9
+#        material: RED_STAINED_GLASS
+#        name: "<red>-64"
+#      minus16:
+#        position: 10
+#        material: RED_STAINED_GLASS_PANE
+#        name: "<red>-16"
+#      minus4:
+#        position: 11
+#        material: ORANGE_STAINED_GLASS_PANE
+#        name: "<red>-4"
+#      minus1:
+#        position: 12
+#        material: YELLOW_STAINED_GLASS_PANE
+#        name: "<red>-1"
+#      plus1:
+#        position: 14
+#        material: LIME_STAINED_GLASS_PANE
+#        name: "<green>+1"
+#      plus4:
+#        position: 15
+#        material: LIME_STAINED_GLASS_PANE
+#        name: "<green>+4"
+#      plus16:
+#        position: 16
+#        material: GREEN_STAINED_GLASS_PANE
+#        name: "<green>+16"
+#      plus64:
+#        position: 17
+#        material: GREEN_STAINED_GLASS
+#        name: "<green>+64"
+#      validate:
+#        position: 13
+#        material: LIME_WOOL
+#        name: "<green>Validate"
+#  bank:
+#    name: "<bold>Bank"
+#    size: 27
+#    slots:
+#      withdraw:
+#        position: 11
+#        material: RED_DYE
+#        name: "<red>Withdraw"
+#        lore:
+#          - "<white><italic>Withdraw <bold>coins <reset><white><italic>from your account"
+#      balance:
+#        position: 13
+#        material: GOLD_INGOT
+#        name: "<gold>Balance"
+#        lore:
+#          - "<italic><white><bold>Coins: <reset><white><balance>"
+#      deposit:
+#        position: 15
+#        material: LIME_DYE
+#        name: "<green>Deposit"
+#        lore:
+#          - "<italic><white>Deposit <bold>coins <reset><white><italic>to your account"
+#    deposit:
+#      name: "<bold>Deposit"
+#    withdraw:
+#      name: "<bold>Withdraw"
+
+
+database:
+  host: localhost
+  port: 3306
+  user: minecraft
+  password: TaSqTQ2AfLwn&4a&rKZW
+  table: survival
