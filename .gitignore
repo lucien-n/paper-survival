@@ -111,3 +111,10 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+# Server
+server/*
+!server/plugins
+!server/start.bat
+!server/eula.txt
+!server/*.jar

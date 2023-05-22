@@ -1,7 +1,7 @@
-package me.scaffus.sguis.command.commands
+package me.scaffus.survival.command.commands
 
-import main.kotlin.me.scaffus.survival.command.Command
 import me.scaffus.survival.Survival
+import me.scaffus.survival.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.Command as BukkitCommand
 
@@ -12,7 +12,7 @@ class ReloadMenusCommand(private val plugin: Survival) : Command(plugin, "reload
         label: String,
         args: Array<out String>?
     ): Boolean {
-        plugin.menuManager.generateMenusFromConfigs()
+        plugin.menuManager.register()
         sender.sendMessage("Menus reloaded")
 
         return true;

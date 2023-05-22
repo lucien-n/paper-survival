@@ -1,4 +1,4 @@
-package main.kotlin.me.scaffus.survival.command.commands
+package me.scaffus.survival.command.commands
 
 import me.scaffus.survival.Survival
 import org.bukkit.command.Command

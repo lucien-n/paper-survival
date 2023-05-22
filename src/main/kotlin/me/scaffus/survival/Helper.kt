@@ -1,13 +1,14 @@
 package me.scaffus.survival
 
-import main.kotlin.me.scaffus.survival.ClassFinder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.Material
+import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.inventory.ItemStack
 import java.io.File
+import kotlin.reflect.KClass
 
 
 class Helper(private val plugin: Survival) {
@@ -68,19 +69,20 @@ class Helper(private val plugin: Survival) {
         return item
     }
 
-    fun getItemFromConfig(path: String): ItemStack? {
-        if (plugin.config.get("$path.material") == null) return null
+    fun getItemFromConfigSection(config: ConfigurationSection?): ItemStack {
+        if (config == null) return ItemStack(Material.AIR)
 
-        val material = Material.getMaterial(plugin.config.getString("$path.material") ?: "AIR") ?: Material.AIR
-        val amount = (plugin.config.get("$path.amount") ?: 1) as Int
-        val name = plugin.config.getString("$path.name")!!
-        val lore = plugin.config.getStringList("$path.lore").toTypedArray()
+        val material = Material.getMaterial(config.getString("material") ?: "AIR") ?: Material.AIR
+        val amount = (config.get("amount") ?: 1) as Int
+        val name = config.getString("name")!!
+        val lore = config.getStringList("lore").toTypedArray()
 
         return createItem(material, amount, name, lore)
     }
 
     fun getClassesFromPackage(
         packageName: String,
+        classType: KClass<*>
     ): MutableMap<String, Any> {
         val classes: MutableMap<String, Any> = mutableMapOf()
         for (anyClass in ClassFinder.getClasses(
@@ -88,18 +90,17 @@ class Helper(private val plugin: Survival) {
             packageName
         )) {
             try {
-                plugin.logger.info("Found class '${anyClass.name}'")
                 val classToRegister = Class.forName(anyClass.name)
-                plugin.logger.info(
-                    "Registering class '${classToRegister.name}'"
-                )
-                classes[classToRegister.name] =
-                    classToRegister.getDeclaredConstructor(Survival::class.java).newInstance(plugin).javaClass
+                if (classType.java.isAssignableFrom(classToRegister)) {
+                    val instance = classToRegister.getDeclaredConstructor(Survival::class.java)
+                        .newInstance(plugin)
+                    classes[classToRegister.name] = instance
+                    continue
+                }
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
-        plugin.logger.info("Returning ${classes.size} classes")
         return classes
     }
 }

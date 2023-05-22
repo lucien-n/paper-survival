@@ -1,6 +1,6 @@
-package me.scaffus.sguis.command.commands
+package me.scaffus.survival.command.commands
 
-import main.kotlin.me.scaffus.survival.command.Command
+import me.scaffus.survival.command.Command
 import me.scaffus.survival.Survival
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -28,6 +28,8 @@ class OpenMenuCommand(private val plugin: Survival) : Command(plugin, "openmenu"
         if (menu == null) {
             sender.sendMessage("Could not find menu '$menuName'")
             return false
+        } else {
+            sender.sendMessage("Opening menu '$menuName'")
         }
 
         menu.open(sender)

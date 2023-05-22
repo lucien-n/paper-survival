@@ -1,0 +1,10 @@
+title: "<bold><gold>Bank"
+size: 27
+background: default
+items:
+  deposit:
+    slot: 15
+    material: RED_DYE
+    name: "<bold>Deposit"
+    lore:
+      - "<gray>Click to deposit"

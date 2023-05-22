@@ -1,4 +1,4 @@
-package main.kotlin.me.scaffus.survival.command
+package me.scaffus.survival.command
 
 import me.scaffus.survival.Survival
 
@@ -8,8 +8,8 @@ class CommandManager(private val plugin: Survival) {
     fun register() {
         plugin.logger.info("Registering commands")
         val commandClasses =
-            plugin.helper.getClassesFromPackage("me.scaffus.survival.command.commands")
-        commandClasses.forEach { (_, commandClass) -> registerCommand(commandClass as Command) }
+            plugin.helper.getClassesFromPackage("me.scaffus.survival.command.commands", Command::class)
+        commandClasses.values.forEach { commandClass -> registerCommand(commandClass as Command) }
     }
 
     fun registerCommand(command: Command) {

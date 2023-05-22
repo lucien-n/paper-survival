@@ -1,6 +1,5 @@
-package me.scaffus.sguis.menu
+package me.scaffus.survival.menu
 
-import main.kotlin.me.scaffus.survival.command.Command
 import me.scaffus.survival.Survival
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
@@ -13,20 +12,49 @@ import java.io.File
 
 class MenuManager(private val plugin: Survival) {
     private val menus: MutableMap<String, Menu> = mutableMapOf()
+    private val defaults: MutableMap<String, ItemStack> = mutableMapOf()
 
-    private val commands: MutableMap<String, Command> = mutableMapOf()
+    init {
+        copyMenusFromResources()
+    }
 
     fun register() {
+        plugin.logger.info("Registering default items")
+        defaults.clear()
+        registerDefaults()
+
         plugin.logger.info("Registering menus")
-        val menuClasses =
-            plugin.helper.getClassesFromPackage("me.scaffus.survival.menu.menus")
-        menuClasses.forEach { (_, menuClass) -> registerMenu(menuClass as Menu) }
+        menus.clear()
+        val menuClasses = plugin.helper.getClassesFromPackage("me.scaffus.survival.menu.menus", Menu::class)
+        menuClasses.values.forEach { menuClass ->
+            registerMenu(menuClass as Menu)
+        }
+
+        plugin.logger.info("Registering menus from configs")
+        generateMenusFromConfigs()
+    }
+
+    fun registerDefaults() {
+        val menusConfig = loadConfig(File(plugin.dataFolder, "menus.yml"))
+        defaults["background"] =
+            plugin.helper.getItemFromConfigSection(menusConfig.getConfigurationSection("defaults.background"))
+        defaults["close"] =
+            plugin.helper.getItemFromConfigSection(menusConfig.getConfigurationSection("defaults.close"))
+        defaults["back"] = plugin.helper.getItemFromConfigSection(menusConfig.getConfigurationSection("defaults.back"))
     }
 
     fun registerMenu(menu: Menu) {
         if (menus.values.contains(menu)) return
         plugin.logger.info("Registering menu '${menu.name}'")
         menus[menu.name] = menu
+    }
+
+    fun getDefault(name: String): ItemStack? {
+        return defaults[name]
+    }
+
+    fun getMenus(): MutableMap<String, Menu> {
+        return menus
     }
 
     fun unregisterMenus() {
@@ -46,80 +74,82 @@ class MenuManager(private val plugin: Survival) {
     }
 
     fun generateMenuFromConfig(menuConfigFile: File) {
-        val config = loadConfig(menuConfigFile)
-        plugin.logger.info("Generating menu '${menuConfigFile.name}'")
-
         val menuName = menuConfigFile.name.replace(".yml", "")
-        val title = config.getString("title") ?: return
-        val size = config.getInt("size")
+        if (menus.keys.contains(menuName)) return
 
-        val backgroundItem = parseItemData(
-            config.getString("background.name") ?: return, config.getConfigurationSection("background") ?: return
-        )
+        val config = loadConfig(menuConfigFile)
+        parseMenuConfig(menuName, config)?.let { menu ->
+            registerMenu(menu)
+        }
+    }
 
-        val menu = GeneratedMenu(plugin, menuName, plugin.helper.format(title), size, backgroundItem)
+    fun parseMenuConfig(menuName: String, config: ConfigurationSection): Menu? {
+        val itemsConfig = config.getConfigurationSection("items") ?: return null
+        val menuSlots: MutableList<Slot> = mutableListOf()
 
-        // Initializing slots
-        val items = config.getConfigurationSection("items")?.getKeys(false) ?: return
-        for (itemName in items) {
-            val itemPath = "items.$itemName"
+        // Loop through each item slot in the configuration
+        for (slotName in itemsConfig.getKeys(false)) {
+            val itemConfig = itemsConfig.getConfigurationSection(slotName) ?: continue
 
-            // Getting either one or multiple slot(s)
-            val slotsPositions: List<Int> = when (val slotConfig = config.get("$itemPath.slot")) {
+            // Get the slot(s) for the item
+            val slots: List<Int> = when (val slotConfig = itemConfig.get("slot")) {
                 is Int -> listOf(slotConfig) // If it's an integer, convert it to a list
                 is List<*> -> slotConfig.filterIsInstance<Int>() // If it's a list, filter out the integers
                 else -> emptyList() // Default to an empty list if it's neither an int nor a list of int
             }
 
-            // Parsing item stack
-            val itemStack = parseItemData(itemName, config.getConfigurationSection(itemPath) ?: continue)
+            // Get the display name, material, amount, and lore for the item
+            val displayName = itemConfig.getString("name") ?: "<bold>Display Name"
+            val material: Material = Material.getMaterial(itemConfig.getString("material") ?: "STICK")
+                ?: Material.STICK
+            val amount: Int = (itemConfig.get("amount") ?: 1) as Int
+            val lore: Array<String> = itemConfig.getStringList("lore").toTypedArray()
+            val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
 
-            // Parsing slot action
-            // Getting either one or multiple slot(s)
-            val actions: List<Map<String, Any>> = when (val actionConfig = config.get("$itemPath.action")) {
-                is List<*> -> actionConfig.filterIsInstance<Map<String, Any>>()
-                is Map<*, *> -> listOf(actionConfig as Map<String, Any>)
-                else -> emptyList()
-            }
+            // Parse slot actions
+            val actions: List<(p: Player) -> Unit> = parseItemAction(itemConfig)?.let { listOf(it) } ?: emptyList()
 
-            plugin.logger.info("Actions: $actions")
-
-            for (slotPosition in slotsPositions) {
-                val slot = Slot(itemName, slotPosition, itemStack)
-                menu.setSlot(slot)
-                actions.forEach { actionConfig ->
-                    menu.addSlotAction(
-                        slot.name, parseItemAction(actionConfig) ?: return
-                    )
-                }
+            // Apply slot to the menu
+            for (slot in slots) {
+                menuSlots.add(Slot(slotName, slot, itemStack, *actions.toTypedArray()))
             }
         }
 
-        registerMenu(menu)
+        // Get menu display name and size
+        val menuDisplayName = config.getString("title") ?: "<bold>Menu Title"
+        var size = config.getInt("size")
+        if (size % 9 != 0) size = 27
+
+        // Get background item
+        var background: ItemStack? = null
+        if (config.getString("background") == "default")
+            background = plugin.menuManager.getDefault("background")
+        else if (config.getConfigurationSection("background") != null) {
+            background = plugin.helper.getItemFromConfigSection(config.getConfigurationSection("background"))
+        }
+
+        val menu = GeneratedMenu(plugin, menuName, plugin.helper.format(menuDisplayName), size, background)
+        menuSlots.forEach { slot -> menu.setSlot(slot) }
+
+        return menu
     }
 
-    private fun parseItemData(itemName: String, itemData: ConfigurationSection): ItemStack {
-        val material = Material.getMaterial(itemData.getString("material") ?: "STICK") ?: Material.STICK
-        val amount = itemData.getInt("amount")
-        val lore = itemData.getStringList("lore").toTypedArray()
-        return plugin.helper.createItem(material, if (amount == 0) 1 else amount, itemName, lore)
-    }
-
-    private fun parseItemAction(action: Map<String, Any>): ((p: Player) -> Unit)? {
-        val type = action["type"] as? String
+    fun parseItemAction(itemConfig: ConfigurationSection): ((p: Player) -> Unit)? {
+        val actionConfig = itemConfig.getConfigurationSection("action") ?: return null
+        val type = actionConfig.getString("type")
 
         if (type.isNullOrBlank()) return null
 
         when (type.uppercase()) {
             "COMMAND" -> {
-                val command = action["command"] ?: return null
+                val command = actionConfig.getString("command") ?: return null
                 return { p: Player ->
                     plugin.server.dispatchCommand(p, command.toString())
                 }
             }
 
             "OPEN_MENU" -> {
-                val menu = action["menu"] ?: return null
+                val menu = actionConfig.getString("menu") ?: return null
                 return { p: Player ->
                     getMenuByName((menu.toString()).lowercase())?.open(p)
                 }
@@ -135,6 +165,11 @@ class MenuManager(private val plugin: Survival) {
         return null
     }
 
+    fun getMenuConfig(name: String): ConfigurationSection {
+        val menuConfigFile = File(plugin.dataFolder, "menus/$name.yml")
+        return loadConfig(menuConfigFile)
+    }
+
     private fun loadConfig(configFile: File): FileConfiguration {
         if (!configFile.exists()) {
             plugin.saveResource(configFile.name, false)
@@ -144,7 +179,6 @@ class MenuManager(private val plugin: Survival) {
     }
 
     fun generateMenusFromConfigs() {
-        plugin.logger.info("Generating menus from configs")
         val menusDir = File(plugin.dataFolder, "menus")
         if (!menusDir.exists() || !menusDir.isDirectory) {
             plugin.logger.warning("Menus directory not found!")
@@ -158,14 +192,24 @@ class MenuManager(private val plugin: Survival) {
         }
 
         for (menuConfigFile in menuConfigFiles) {
-            plugin.logger.info("File name: ${menuConfigFile.name}")
             generateMenuFromConfig(menuConfigFile)
         }
     }
 
-    fun getMenuConfig(name: String): ConfigurationSection {
-        val menuConfigFile = File(plugin.dataFolder, "menus/$name.yml")
-        return loadConfig(menuConfigFile)
+
+    fun copyMenusFromResources() {
+        val menusFolder = File(plugin.dataFolder, "menus")
+        if (!menusFolder.exists()) {
+            menusFolder.mkdirs()
+        }
+
+        val resourceFolder = File(plugin.dataFolder, "resources/menus")
+        resourceFolder.listFiles()?.forEach { file ->
+            val targetFile = File(menusFolder, file.name)
+            if (!targetFile.exists()) {
+                file.copyTo(targetFile)
+            }
+        }
     }
 }
 

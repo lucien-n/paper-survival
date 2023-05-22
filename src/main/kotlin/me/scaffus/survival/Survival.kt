@@ -1,10 +1,10 @@
 package me.scaffus.survival
 
-import main.kotlin.me.scaffus.survival.command.CommandManager
-import main.kotlin.me.scaffus.survival.listener.ListenerManager
-import me.scaffus.sguis.menu.MenuManager
+import me.scaffus.survival.command.CommandManager
+import me.scaffus.survival.listener.ListenerManager
 import me.scaffus.survival.database.DatabaseGetterSetter
 import me.scaffus.survival.database.DatabaseManager
+import me.scaffus.survival.menu.MenuManager
 import me.scaffus.survival.player.PlayerManager
 import org.bukkit.plugin.java.JavaPlugin
 import java.sql.SQLException
@@ -19,6 +19,8 @@ class Survival : JavaPlugin() {
     lateinit var commandManager: CommandManager
     lateinit var listenerManager: ListenerManager
     override fun onEnable() {
+        logger.info("Plugin enabled")
+
         dbManager = DatabaseManager(this)
         db = DatabaseGetterSetter(dbManager.playerCon.connection, this)
         data = Data(this)
@@ -29,7 +31,6 @@ class Survival : JavaPlugin() {
         listenerManager = ListenerManager(this)
 
         saveDefaultConfig()
-        logger.info("Plugin enabled")
 
         playerManager.loadOnlinePlayers()
         commandManager.register()
@@ -38,6 +39,7 @@ class Survival : JavaPlugin() {
     }
 
     override fun onDisable() {
+        logger.info("Plugin disabled")
         try {
             dbManager.close()
         } catch (e: SQLException) {

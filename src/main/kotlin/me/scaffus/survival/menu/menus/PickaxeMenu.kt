@@ -1,13 +1,11 @@
-package me.scaffus.sguis.menu.menus
+package me.scaffus.survival.menu.menus
 
-import me.scaffus.sguis.menu.Menu
-import me.scaffus.sguis.menu.Slot
 import me.scaffus.survival.Survival
+import me.scaffus.survival.menu.Menu
+import me.scaffus.survival.menu.Slot
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
-import org.bukkit.entity.Damageable
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 class PickaxeMenu(private val plugin: Survival) :
     Menu(
@@ -21,10 +19,6 @@ class PickaxeMenu(private val plugin: Survival) :
 
     init {
         val diamondPickaxe = ItemStack(Material.DIAMOND_PICKAXE)
-
-        val durability = diamondPickaxe.itemMeta as Damageable
-        durability.damage(durability.health - 1)
-        diamondPickaxe.itemMeta = durability as ItemMeta
 
         setSlot(Slot("pickaxe", 13, diamondPickaxe, { p ->
             p.inventory.addItem(diamondPickaxe)

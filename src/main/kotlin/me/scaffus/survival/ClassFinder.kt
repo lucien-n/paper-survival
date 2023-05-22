@@ -1,6 +1,5 @@
-package main.kotlin.me.scaffus.survival
+package me.scaffus.survival
 
-import org.bukkit.Bukkit
 import java.io.File
 import java.util.*
 import java.util.jar.JarEntry
@@ -16,13 +15,10 @@ object ClassFinder {
             while (entry.hasMoreElements()) {
                 val jarEntry: JarEntry = entry.nextElement()
                 val name: String = jarEntry.getName().replace("/", ".")
-                if (name.startsWith("me.scaffus.survival"))
-                    Bukkit.getLogger().info("Found class '$name'")
                 if (name.startsWith(packageName!!) && name.endsWith(".class")) classes.add(
                     Class.forName(
                         name.substring(
-                            0,
-                            name.length - 6
+                            0, name.length - 6
                         )
                     )
                 )
@@ -31,7 +27,6 @@ object ClassFinder {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        Bukkit.getLogger().info("Returning classes '${classes.size}'")
         return classes
     }
 }

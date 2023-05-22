@@ -3,3 +3,22 @@ version: '${project.version}'
 main: me.scaffus.survival.Survival
 api-version: 1.19
 load: STARTUP
+
+commands:
+  openmenu:
+    aliases: [ "om", "omenu", "openm" ]
+    description: Opens the specified menu
+  reloadmenus:
+    aliases: [ "rm", "rmenus", "reloadm" ]
+    description: Reloads all menus
+  listmenus:
+    aliases: [ "lm", "lmenus", "listm" ]
+    description: Lists all menus
+  bank:
+    description: Opens the bank menu
+#    survival:
+#        description: Survival plugin
+#        usage: /<command>
+#        aliases: [survival]
+#        permission: survival.command
+#        permission-message: You don't have permission to use this command

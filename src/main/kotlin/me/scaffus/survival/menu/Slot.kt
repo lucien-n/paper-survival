@@ -1,4 +1,4 @@
-package me.scaffus.sguis.menu
+package me.scaffus.survival.menu
 
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

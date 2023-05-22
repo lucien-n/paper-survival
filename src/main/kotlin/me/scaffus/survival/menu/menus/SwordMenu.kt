@@ -1,8 +1,8 @@
-package me.scaffus.sguis.menu.menus
+package me.scaffus.survival.menu.menus
 
-import me.scaffus.sguis.menu.Menu
-import me.scaffus.sguis.menu.Slot
 import me.scaffus.survival.Survival
+import me.scaffus.survival.menu.Menu
+import me.scaffus.survival.menu.Slot
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -19,10 +19,10 @@ class SwordMenu(private val plugin: Survival) :
     var giveCounter = 0
 
     init {
-        val diamondPickaxe = ItemStack(Material.DIAMOND_SWORD)
-        diamondPickaxe.addUnsafeEnchantment(Enchantment.DURABILITY, 255)
-        setSlot(Slot("sword", 13, diamondPickaxe, { p ->
-            p.inventory.addItem(diamondPickaxe)
+        val diamondSword = ItemStack(Material.DIAMOND_SWORD)
+        diamondSword.addUnsafeEnchantment(Enchantment.DURABILITY, 255)
+        setSlot(Slot("sword", 13, diamondSword, { p ->
+            p.inventory.addItem(diamondSword)
             p.updateInventory()
             giveCounter++
             updateSlotLoreLine(

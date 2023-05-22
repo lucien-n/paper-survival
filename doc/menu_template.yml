@@ -1,0 +1,19 @@
+title: "<bold>Menu"
+size: 27
+background: default
+items:
+  a_slot:
+    slot: 13
+    material: PAPER
+    name: "<bold>A Slot"
+    lore:
+      - "<gray>This is a slot"
+  another_slot:
+    slot:
+      - 11
+      - 15
+    material: STOCK
+    name: "<bold>Another Slot"
+    lore:
+      - "<gray>This is another slot"
+      - "<gray>It has multiple slot positions"

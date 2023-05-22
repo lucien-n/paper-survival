@@ -1,4 +1,4 @@
-package main.kotlin.me.scaffus.survival.listener.listeners
+package me.scaffus.survival.listener.listeners
 
 import me.scaffus.survival.Survival
 import org.bukkit.event.EventHandler

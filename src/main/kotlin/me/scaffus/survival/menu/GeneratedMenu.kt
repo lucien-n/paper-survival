@@ -1,4 +1,4 @@
-package me.scaffus.sguis.menu
+package me.scaffus.survival.menu
 
 import me.scaffus.survival.Survival
 import net.kyori.adventure.text.Component

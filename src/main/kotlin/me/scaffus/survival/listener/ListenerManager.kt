@@ -1,6 +1,6 @@
-package main.kotlin.me.scaffus.survival.listener
+package me.scaffus.survival.listener
 
-import main.kotlin.me.scaffus.survival.listener.listeners.PlayerJoinQuitListener
+import me.scaffus.survival.listener.listeners.PlayerJoinQuitListener
 import me.scaffus.survival.Survival
 import org.bukkit.Bukkit
 
