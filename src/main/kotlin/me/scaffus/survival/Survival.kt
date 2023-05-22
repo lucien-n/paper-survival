@@ -1,9 +1,9 @@
 package me.scaffus.survival
 
 import me.scaffus.survival.command.CommandManager
-import me.scaffus.survival.listener.ListenerManager
 import me.scaffus.survival.database.DatabaseGetterSetter
 import me.scaffus.survival.database.DatabaseManager
+import me.scaffus.survival.listener.ListenerManager
 import me.scaffus.survival.menu.MenuManager
 import me.scaffus.survival.player.PlayerManager
 import org.bukkit.plugin.java.JavaPlugin

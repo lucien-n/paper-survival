@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.Material
+import org.bukkit.command.CommandSender
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
@@ -14,6 +15,36 @@ import kotlin.reflect.KClass
 
 
 class Helper(private val plugin: Survival) {
+    private val messages: MutableMap<String, String> = mutableMapOf()
+
+    init {
+        loadConfigMessages()
+    }
+
+    fun loadConfigMessages() {
+        val messagesConfig = loadConfig(File(plugin.dataFolder, "messages.yml"))
+        messagesConfig.getKeys(false).forEach { section ->
+            val sectionConfig = messagesConfig.getConfigurationSection(section) ?: return
+            sectionConfig.getKeys(false).forEach { message ->
+                messages["$section.$message"] = sectionConfig.getString(message) ?: return
+            }
+        }
+    }
+
+    fun getMessage(path: String): String? {
+        return messages[path]
+    }
+
+    fun formatMessage(path: String, vararg placeholders: String): Component {
+        return MiniMessage.miniMessage().deserialize(
+            getMessage(path) ?: return Component.text("<bold><red>Message not found, please contact an admin"),
+            *getTagResolvers(*placeholders, "prefix:${plugin.data.getPrefix()}")
+        )
+    }
+
+    fun sendMessage(recipient: CommandSender, path: String, vararg placeholders: String) {
+        recipient.sendMessage(formatMessage(path, *placeholders))
+    }
 
     fun getMessageFromConfig(path: String): String {
         return plugin.config.getString(path)!!

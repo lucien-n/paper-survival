@@ -9,7 +9,7 @@ class PlayerManager(private val plugin: Survival) {
     fun loadPlayer(bukkitPlayer: BukkitPlayer) {
         val uuid = bukkitPlayer.uniqueId
         val bankAccount = loadBankAccount(uuid)
-        plugin.data.setPlayer(uuid, Player(uuid, bankAccount))
+        plugin.data.setPlayer(uuid, SPlayer(uuid, bankAccount))
     }
 
     fun loadOnlinePlayers() {

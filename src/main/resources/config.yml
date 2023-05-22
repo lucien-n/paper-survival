@@ -1,12 +1,7 @@
 prefix: "<gray><bold>[<reset><white>Vival<gray><bold>]"
 
 messages:
-  player_joined: "<italic><gold><player> <reset><yellow>joined the server!"
-  player_left: "<italic><gold><player> <reset><yellow>left the server!"
-  bank:
-    not_enough: "<italic><yellow>You do not have enough money in your account"
-    deposit_successful: "<italic><yellow>You deposited <coins>coins to your account"
-    withdraw_successful: "<italic><yellow>You withdrew <coins>coins from your account"
+
 
 menus:
   defaults:
