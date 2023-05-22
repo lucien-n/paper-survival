@@ -3,8 +3,6 @@ package me.scaffus.survival.menu
 import me.scaffus.survival.Survival
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
@@ -24,7 +22,7 @@ class MenuManager(private val plugin: Survival) {
         registerDefaults()
 
         plugin.logger.info("Registering menus")
-        menus.clear()
+        unregisterMenus()
         val menuClasses = plugin.helper.getClassesFromPackage("me.scaffus.survival.menu.menus", Menu::class)
         menuClasses.values.forEach { menuClass ->
             registerMenu(menuClass as Menu)
@@ -35,7 +33,7 @@ class MenuManager(private val plugin: Survival) {
     }
 
     fun registerDefaults() {
-        val menusConfig = loadConfig(File(plugin.dataFolder, "menus.yml"))
+        val menusConfig = plugin.helper.loadConfig(File(plugin.dataFolder, "menus.yml"))
         defaults["background"] =
             plugin.helper.getItemFromConfigSection(menusConfig.getConfigurationSection("defaults.background"))
         defaults["close"] =
@@ -49,19 +47,19 @@ class MenuManager(private val plugin: Survival) {
         menus[menu.name] = menu
     }
 
+    fun unregisterMenus() {
+        for (menu in menus.values) {
+            HandlerList.unregisterAll(menu)
+        }
+        menus.clear()
+    }
+
     fun getDefault(name: String): ItemStack? {
         return defaults[name]
     }
 
     fun getMenus(): MutableMap<String, Menu> {
         return menus
-    }
-
-    fun unregisterMenus() {
-        for (menu in menus.values) {
-            HandlerList.unregisterAll(menu)
-        }
-        menus.clear()
     }
 
     fun contains(menuName: String): Boolean {
@@ -77,7 +75,7 @@ class MenuManager(private val plugin: Survival) {
         val menuName = menuConfigFile.name.replace(".yml", "")
         if (menus.keys.contains(menuName)) return
 
-        val config = loadConfig(menuConfigFile)
+        val config = plugin.helper.loadConfig(menuConfigFile)
         parseMenuConfig(menuName, config)?.let { menu ->
             registerMenu(menu)
         }
@@ -100,8 +98,7 @@ class MenuManager(private val plugin: Survival) {
 
             // Get the display name, material, amount, and lore for the item
             val displayName = itemConfig.getString("name") ?: "<bold>Display Name"
-            val material: Material = Material.getMaterial(itemConfig.getString("material") ?: "STICK")
-                ?: Material.STICK
+            val material: Material = Material.getMaterial(itemConfig.getString("material") ?: "STICK") ?: Material.STICK
             val amount: Int = (itemConfig.get("amount") ?: 1) as Int
             val lore: Array<String> = itemConfig.getStringList("lore").toTypedArray()
             val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
@@ -110,9 +107,7 @@ class MenuManager(private val plugin: Survival) {
             val actions: List<(p: Player) -> Unit> = parseItemAction(itemConfig)?.let { listOf(it) } ?: emptyList()
 
             // Apply slot to the menu
-            for (slot in slots) {
-                menuSlots.add(Slot(slotName, slot, itemStack, *actions.toTypedArray()))
-            }
+            menuSlots.add(Slot(slotName, slots, itemStack, *actions.toTypedArray()))
         }
 
         // Get menu display name and size
@@ -122,8 +117,7 @@ class MenuManager(private val plugin: Survival) {
 
         // Get background item
         var background: ItemStack? = null
-        if (config.getString("background") == "default")
-            background = plugin.menuManager.getDefault("background")
+        if (config.getString("background") == "default") background = plugin.menuManager.getDefault("background")
         else if (config.getConfigurationSection("background") != null) {
             background = plugin.helper.getItemFromConfigSection(config.getConfigurationSection("background"))
         }
@@ -167,15 +161,7 @@ class MenuManager(private val plugin: Survival) {
 
     fun getMenuConfig(name: String): ConfigurationSection {
         val menuConfigFile = File(plugin.dataFolder, "menus/$name.yml")
-        return loadConfig(menuConfigFile)
-    }
-
-    private fun loadConfig(configFile: File): FileConfiguration {
-        if (!configFile.exists()) {
-            plugin.saveResource(configFile.name, false)
-        }
-
-        return YamlConfiguration.loadConfiguration(configFile)
+        return plugin.helper.loadConfig(menuConfigFile)
     }
 
     fun generateMenusFromConfigs() {

@@ -6,6 +6,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
+import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import java.io.File
 import kotlin.reflect.KClass
@@ -102,5 +104,13 @@ class Helper(private val plugin: Survival) {
             }
         }
         return classes
+    }
+
+    fun loadConfig(configFile: File): FileConfiguration {
+        if (!configFile.exists()) {
+            plugin.saveResource(configFile.name, false)
+        }
+
+        return YamlConfiguration.loadConfiguration(configFile)
     }
 }

@@ -47,17 +47,17 @@ abstract class Menu(
 
     fun setSlot(slot: Slot) {
         slots[slot.name] = slot
-        inventory.setItem(slot.slot, slot.item)
+        slot.slots.forEach { slotIndex ->
+            inventory.setItem(slotIndex, slot.item)
+        }
     }
 
     fun getSlot(slotName: String): Slot? {
         return slots[slotName]
     }
 
-    fun setSlotPosition(slotName: String, position: Int) {
-        val slot = getSlot(slotName) ?: return
-        slot.slot = position
-        setSlot(slot)
+    fun getSlot(slotPosition: Int): Slot? {
+        return slots.values.find { slot -> slot.slots.contains(slotPosition) }
     }
 
     fun setSlotItemStack(slotName: String, itemStack: ItemStack) {
@@ -115,7 +115,6 @@ abstract class Menu(
 
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        plugin.logger.info("Clicked inventory ${event.inventory} || Menu inventory $inventory")
         if (event.inventory == inventory) {
             event.isCancelled = true
             val slot = event.rawSlot
@@ -133,17 +132,6 @@ abstract class Menu(
     }
 
     protected fun handleItemClick(p: Player, slotPosition: Int) {
-        slots.values.forEach { slot: Slot ->
-            plugin.logger.info("Slot ${slot.slot} || Slot position $slotPosition")
-            if (slot.slot == slotPosition) {
-                p.sendMessage("Clicked slot ${slot.name} || Actions: ${slot.actions}")
-                slot.actions.forEach { action ->
-                    action.invoke(
-                        p
-                    )
-                    plugin.logger.info("Invoked action for slot ${slot.name}")
-                }
-            }
-        }
+        getSlot(slotPosition)?.invokeActions(p) ?: return
     }
 }
