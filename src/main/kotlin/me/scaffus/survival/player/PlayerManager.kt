@@ -33,7 +33,7 @@ class PlayerManager(private val plugin: Survival) {
             plugin.logger.info("Error while saving $uuid : Player not found")
             return
         }
-        plugin.db.savePlayerBankAccount(uuid, player.bankAccount)
+        plugin.db.savePlayerBankAccount(uuid, player.bank)
     }
 
     fun getPlayer(name: String): SPlayer? {
@@ -53,7 +53,7 @@ class PlayerManager(private val plugin: Survival) {
     }
 
     fun getBankAccount(uuid: UUID): BankAccount {
-        return players[uuid]!!.bankAccount
+        return players[uuid]!!.bank
     }
 
     fun setPlayer(uuid: UUID, player: SPlayer) {

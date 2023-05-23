@@ -1,30 +1,35 @@
 package me.scaffus.survival.player
 
+import me.scaffus.survival.SResult
 import java.util.*
 
 class BankAccount(private val uuid: UUID, private var balance: Double) {
-    fun withdraw(amount: Double): Pair<Boolean, String> {
-        if (amount < 0) {
-            return Pair(false, "You cannot withdraw a negative amount")
+    fun withdraw(amount: Number): SResult {
+        val withdrawAmount = amount.toDouble()
+
+        if (withdrawAmount < 0) {
+            return SResult(false, "bank.no_negative")
         }
 
-        if (balance < amount) {
-            return Pair(false, "Insufficient funds")
+        if (balance < withdrawAmount) {
+            return SResult(false, "bank.insufficient_funds")
         }
 
-        balance -= amount
+        balance -= withdrawAmount
 
-        return Pair(true, "Withdraw successful")
+        return SResult(true, "bank.withdraw_successful")
     }
 
-    fun deposit(amount: Double): Pair<Boolean, String> {
-        if (amount < 0) {
-            return Pair(false, "You cannot deposit a negative amount")
+    fun deposit(amount: Number): SResult {
+        val depositAmount = amount.toDouble()
+
+        if (depositAmount < 0) {
+            return SResult(false, "bank.no_negative")
         }
 
-        balance += amount
+        balance += depositAmount
 
-        return Pair(true, "Deposit successful")
+        return SResult(true, "Deposit successful")
     }
 
     fun getBalance(): Double {

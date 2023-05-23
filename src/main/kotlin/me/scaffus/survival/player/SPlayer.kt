@@ -5,21 +5,16 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.InventoryView
 import java.util.*
 
-class SPlayer(private val plugin: Survival, val player: Player, val bankAccount: BankAccount) {
-    private var currentInventory: InventoryView? = null
+class SPlayer(private val plugin: Survival, val player: Player, val bank: BankAccount) {
     val uniqueId: UUID = player.uniqueId
     private var conversationPeer: SPlayer? = null
-
-    fun getCurrentInventory(): InventoryView? {
-        return currentInventory
-    }
-
-    fun setCurrentInventory(inventory: InventoryView) {
-        currentInventory = inventory
-    }
+    var inventory: Inventory
+        get() = player.inventory
+        set(value) {
+            player.openInventory(value)
+        }
 
     fun getConversationPeer(): SPlayer? {
         return conversationPeer
@@ -49,5 +44,13 @@ class SPlayer(private val plugin: Survival, val player: Player, val bankAccount:
 
     fun openInventory(inventory: Inventory) {
         player.openInventory(inventory)
+    }
+
+    fun closeInventory() {
+        player.closeInventory()
+    }
+
+    fun updateInventory() {
+        player.updateInventory()
     }
 }

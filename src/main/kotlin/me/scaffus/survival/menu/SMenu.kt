@@ -71,14 +71,14 @@ abstract class SMenu(
         setSlot(slot)
     }
 
-    fun addSlotAction(slotName: String, action: (p: Player) -> Unit) {
+    fun addSlotAction(slotName: String, action: (p: SPlayer) -> Unit) {
         val slot = getSlot(slotName) ?: return
         if (slot.actions.contains(action)) return
         slot.actions.add(action)
         setSlot(slot)
     }
 
-    fun removeSlotAction(slotName: String, action: (p: Player) -> Unit) {
+    fun removeSlotAction(slotName: String, action: (p: SPlayer) -> Unit) {
         val slot = getSlot(slotName) ?: return
         if (!slot.actions.contains(action)) return
         slot.actions.remove(action)
@@ -137,6 +137,7 @@ abstract class SMenu(
     }
 
     protected fun handleItemClick(p: Player, slotPosition: Int) {
-        getSlot(slotPosition)?.invokeActions(p) ?: return
+        val player = plugin.getSPlayer(p.uniqueId) ?: return
+        getSlot(slotPosition)?.invokeActions(player)
     }
 }

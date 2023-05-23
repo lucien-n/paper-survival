@@ -1,9 +1,9 @@
 package me.scaffus.survival.menu
 
 import me.scaffus.survival.Survival
+import me.scaffus.survival.player.SPlayer
 import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
-import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
 import java.io.File
@@ -102,8 +102,13 @@ class MenuManager(private val plugin: Survival) {
             val lore: Array<String> = itemConfig.getStringList("lore").toTypedArray()
             val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
 
+            val customModelData = itemConfig.getInt("custom_model_data")
+            if (customModelData != 0)
+                itemStack.itemMeta?.setCustomModelData(customModelData)
+
             // Parse slot actions
-            val actions: List<(p: Player) -> Unit> = parseItemAction(itemConfig)?.let { listOf(it) } ?: emptyList()
+            val actions: List<(p: SPlayer) -> Unit> = parseItemAction(itemConfig)?.let { listOf(it) }
+                ?: emptyList()
 
             // Apply slot to the menu
             menuSlots.add(Slot(slotName, slots, itemStack, *actions.toTypedArray()))
@@ -121,13 +126,13 @@ class MenuManager(private val plugin: Survival) {
             background = plugin.helper.getItemFromConfigSection(config.getConfigurationSection("background"))
         }
 
-        val menu = GeneratedSMenu(plugin, menuName, plugin.helper.format(menuDisplayName), size, background)
+        val menu = GeneratedMenu(plugin, menuName, plugin.helper.format(menuDisplayName), size, background)
         menuSlots.forEach { slot -> menu.setSlot(slot) }
 
         return menu
     }
 
-    fun parseItemAction(itemConfig: ConfigurationSection): ((p: Player) -> Unit)? {
+    fun parseItemAction(itemConfig: ConfigurationSection): ((p: SPlayer) -> Unit)? {
         val actionConfig = itemConfig.getConfigurationSection("action") ?: return null
         val type = actionConfig.getString("type")
 
@@ -136,20 +141,20 @@ class MenuManager(private val plugin: Survival) {
         when (type.uppercase()) {
             "COMMAND" -> {
                 val command = actionConfig.getString("command") ?: return null
-                return { p: Player ->
-                    plugin.server.dispatchCommand(p, command.toString())
+                return { p: SPlayer ->
+                    plugin.server.dispatchCommand(p.player, command)
                 }
             }
 
             "OPEN_MENU" -> {
                 val menu = actionConfig.getString("menu") ?: return null
-                return { p: Player ->
-                    getMenu((menu.toString()).lowercase())?.open(p)
+                return { p: SPlayer ->
+                    getMenu((menu).lowercase())?.open(p)
                 }
             }
 
             "CLOSE_MENU" -> {
-                return { p: Player ->
+                return { p: SPlayer ->
                     p.closeInventory()
                 }
             }
