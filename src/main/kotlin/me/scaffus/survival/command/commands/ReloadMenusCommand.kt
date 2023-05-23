@@ -1,11 +1,11 @@
 package me.scaffus.survival.command.commands
 
 import me.scaffus.survival.Survival
-import me.scaffus.survival.command.Command
+import me.scaffus.survival.command.SCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.command.Command as BukkitCommand
 
-class ReloadMenusCommand(private val plugin: Survival) : Command(plugin, "reloadmenus") {
+class ReloadMenusCommand(private val plugin: Survival) : SCommand(plugin, "reloadmenus") {
     override fun onCommand(
         sender: CommandSender,
         command: BukkitCommand,

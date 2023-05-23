@@ -1,6 +1,7 @@
 package me.scaffus.survival.menu
 
 import me.scaffus.survival.Survival
+import me.scaffus.survival.player.SPlayer
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -10,7 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-abstract class Menu(
+abstract class SMenu(
     private val plugin: Survival,
     val name: String,
     private val title: Component = Component.empty(),
@@ -25,11 +26,15 @@ abstract class Menu(
         Bukkit.getPluginManager().registerEvents(this, plugin)
     }
 
+    fun open(p: SPlayer) {
+        p.openInventory(inventory)
+    }
+
     fun open(p: Player) {
         p.openInventory(inventory)
     }
 
-    private fun recreate(menu: Menu) {
+    private fun recreate(menu: SMenu) {
         inventory = Bukkit.createInventory(null, menu.size, menu.title)
         setBackground(menu.backgroundItem ?: return)
         menu.slots.forEach { (_, slot) ->

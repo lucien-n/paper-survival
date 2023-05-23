@@ -1,10 +1,10 @@
 package me.scaffus.survival.menu.menus
 
 import me.scaffus.survival.Survival
-import me.scaffus.survival.menu.Menu
+import me.scaffus.survival.menu.SMenu
 import org.bukkit.entity.Player
 
-class BankMenu(private val plugin: Survival) : Menu(
+class BankSMenu(private val plugin: Survival) : SMenu(
     plugin,
     "bank"
 ) {

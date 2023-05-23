@@ -1,12 +1,12 @@
 package me.scaffus.survival.command.commands
 
-import me.scaffus.survival.command.Command
+import me.scaffus.survival.command.SCommand
 import me.scaffus.survival.Survival
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.command.Command as BukkitCommand
 
-class OpenMenuCommand(private val plugin: Survival) : Command(plugin, "openmenu") {
+class OpenMenuCommand(private val plugin: Survival) : SCommand(plugin, "openmenu") {
     override fun onCommand(
         sender: CommandSender,
         command: BukkitCommand,
@@ -24,7 +24,7 @@ class OpenMenuCommand(private val plugin: Survival) : Command(plugin, "openmenu"
         }
 
         val menuName = args[0]
-        val menu = plugin.menuManager.getMenuByName(menuName)
+        val menu = plugin.menuManager.getMenu(menuName)
         if (menu == null) {
             sender.sendMessage("Could not find menu '$menuName'")
             return false

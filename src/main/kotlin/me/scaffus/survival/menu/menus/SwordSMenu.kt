@@ -1,15 +1,15 @@
 package me.scaffus.survival.menu.menus
 
 import me.scaffus.survival.Survival
-import me.scaffus.survival.menu.Menu
+import me.scaffus.survival.menu.SMenu
 import me.scaffus.survival.menu.Slot
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 
-class SwordMenu(private val plugin: Survival) :
-    Menu(
+class SwordSMenu(private val plugin: Survival) :
+    SMenu(
         plugin,
         "sword",
         MiniMessage.miniMessage().deserialize("<bold><italic><aqua>Diamond Sword"),

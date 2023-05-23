@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack
 import java.io.File
 
 class MenuManager(private val plugin: Survival) {
-    private val menus: MutableMap<String, Menu> = mutableMapOf()
+    private val menus: MutableMap<String, SMenu> = mutableMapOf()
     private val defaults: MutableMap<String, ItemStack> = mutableMapOf()
 
     init {
@@ -23,9 +23,9 @@ class MenuManager(private val plugin: Survival) {
 
         plugin.logger.info("Registering menus")
         unregisterMenus()
-        val menuClasses = plugin.helper.getClassesFromPackage("me.scaffus.survival.menu.menus", Menu::class)
+        val menuClasses = plugin.helper.getClassesFromPackage("me.scaffus.survival.menu.menus", SMenu::class)
         menuClasses.values.forEach { menuClass ->
-            registerMenu(menuClass as Menu)
+            registerMenu(menuClass as SMenu)
         }
 
         plugin.logger.info("Registering menus from configs")
@@ -41,7 +41,7 @@ class MenuManager(private val plugin: Survival) {
         defaults["back"] = plugin.helper.getItemFromConfigSection(menusConfig.getConfigurationSection("defaults.back"))
     }
 
-    fun registerMenu(menu: Menu) {
+    fun registerMenu(menu: SMenu) {
         if (menus.values.contains(menu)) return
         plugin.logger.info("Registering menu '${menu.name}'")
         menus[menu.name] = menu
@@ -58,7 +58,7 @@ class MenuManager(private val plugin: Survival) {
         return defaults[name]
     }
 
-    fun getMenus(): MutableMap<String, Menu> {
+    fun getMenus(): MutableMap<String, SMenu> {
         return menus
     }
 
@@ -66,9 +66,8 @@ class MenuManager(private val plugin: Survival) {
         return menus.containsKey(menuName)
     }
 
-    fun getMenuByName(menuName: String): Menu? {
-        if (!contains(menuName)) return null
-        return menus[menuName]
+    fun getMenu(name: String): SMenu? {
+        return menus[name]
     }
 
     fun generateMenuFromConfig(menuConfigFile: File) {
@@ -81,7 +80,7 @@ class MenuManager(private val plugin: Survival) {
         }
     }
 
-    fun parseMenuConfig(menuName: String, config: ConfigurationSection): Menu? {
+    fun parseMenuConfig(menuName: String, config: ConfigurationSection): SMenu? {
         val itemsConfig = config.getConfigurationSection("items") ?: return null
         val menuSlots: MutableList<Slot> = mutableListOf()
 
@@ -122,7 +121,7 @@ class MenuManager(private val plugin: Survival) {
             background = plugin.helper.getItemFromConfigSection(config.getConfigurationSection("background"))
         }
 
-        val menu = GeneratedMenu(plugin, menuName, plugin.helper.format(menuDisplayName), size, background)
+        val menu = GeneratedSMenu(plugin, menuName, plugin.helper.format(menuDisplayName), size, background)
         menuSlots.forEach { slot -> menu.setSlot(slot) }
 
         return menu
@@ -145,7 +144,7 @@ class MenuManager(private val plugin: Survival) {
             "OPEN_MENU" -> {
                 val menu = actionConfig.getString("menu") ?: return null
                 return { p: Player ->
-                    getMenuByName((menu.toString()).lowercase())?.open(p)
+                    getMenu((menu.toString()).lowercase())?.open(p)
                 }
             }
 

@@ -16,6 +16,9 @@ commands:
     description: Lists all menus
   bank:
     description: Opens the bank menu
+  message:
+    aliases: ["msg", "w", "tell"]
+    description: Send a private message to a player
 #    survival:
 #        description: Survival plugin
 #        usage: /<command>

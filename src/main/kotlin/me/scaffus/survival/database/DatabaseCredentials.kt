@@ -17,4 +17,5 @@ class DatabaseCredentials(
             .append(databaseName)
         return sb.toString()
     }
+    // jdbc:mysql://u19411_GlmfiGMvrP:izORXgo7o%5E2xh6ZP!!S.Eg7D@sql-01.fra02.mine-hoster.de:3306/s19411_survival
 }

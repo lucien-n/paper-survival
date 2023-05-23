@@ -9,11 +9,14 @@ class DatabaseConnection(private val plugin: Survival, private val databaseCrede
     var connection: Connection? = null
 
     init {
-        connect()
-        plugin.logger.info("Connection to database successful")
+        val connectionSuccessful = connect()
+        if (connectionSuccessful)
+            plugin.logger.info("Connection to database successful")
+        else
+            plugin.logger.warning("Couldn't connect to database")
     }
 
-    private fun connect() {
+    private fun connect(): Boolean {
         try {
             Class.forName("com.mysql.jdbc.Driver")
             connection = DriverManager.getConnection(
@@ -21,11 +24,13 @@ class DatabaseConnection(private val plugin: Survival, private val databaseCrede
                 databaseCredentials.user,
                 databaseCredentials.password
             )
+            return true
         } catch (e: SQLException) {
-            throw RuntimeException(e)
+            plugin.logger.severe(e.toString())
         } catch (e: ClassNotFoundException) {
-            throw RuntimeException(e)
+            plugin.logger.severe(e.toString())
         }
+        return false
     }
 
     @Throws(SQLException::class)

@@ -31,8 +31,8 @@ class Helper(private val plugin: Survival) {
         }
     }
 
-    fun getMessage(path: String): String? {
-        return messages[path]
+    fun getMessage(path: String): String {
+        return messages[path] ?: "<red>Message not found"
     }
 
     fun formatMessage(path: String, vararg placeholders: String): Component {
@@ -47,7 +47,7 @@ class Helper(private val plugin: Survival) {
     }
 
     fun getMessageFromConfig(path: String): String {
-        return plugin.config.getString(path)!!
+        return plugin.config.getString(path) ?: "<red>Message not found"
     }
 
     fun getTagResolvers(vararg args: String): Array<TagResolver> {
@@ -60,7 +60,7 @@ class Helper(private val plugin: Survival) {
 
     fun formatConfigMsg(path: String, vararg args: String): Component {
         return MiniMessage.miniMessage().deserialize(
-            getMessageFromConfig(path), *getTagResolvers(*args, "prefix:${plugin.data.getPrefix()}")
+            getMessage(path), *getTagResolvers(*args, "prefix:${plugin.data.getPrefix()}")
         )
     }
 

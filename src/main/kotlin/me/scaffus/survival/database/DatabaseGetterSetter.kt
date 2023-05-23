@@ -10,25 +10,17 @@ import java.sql.SQLException
 import java.util.*
 
 class DatabaseGetterSetter(private val connection: Connection?, private val plugin: Survival) {
+    private fun checkCon() {
+        if (connection == null) return
+    }
+
     private fun ps(statement: String): PreparedStatement? {
+        checkCon()
         return try {
             connection!!.prepareStatement(statement)
         } catch (e: SQLException) {
             throw RuntimeException(e)
         }
-    }
-
-    fun query(query: String): ResultSet? {
-        try {
-            val psQuery = ps(query)
-            val queryResult = psQuery!!.executeQuery()
-            if (queryResult.next()) {
-                return queryResult
-            }
-        } catch (e: SQLException) {
-            throw RuntimeException(e)
-        }
-        return null
     }
 
     fun createPlayer(p: Player) {

@@ -4,12 +4,12 @@ import me.scaffus.survival.Survival
 import net.kyori.adventure.text.Component
 import org.bukkit.inventory.ItemStack
 
-class GeneratedMenu(
+class GeneratedSMenu(
     private val plugin: Survival,
     val menuName: String,
     val title: Component,
     val size: Int,
     backgroundItem: ItemStack? = null
 ) :
-    Menu(plugin, menuName, title, size, backgroundItem) {
+    SMenu(plugin, menuName, title, size, backgroundItem) {
 }

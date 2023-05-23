@@ -7,12 +7,14 @@ player:
   not_found: "<italic><red><player> not found"
   joined: "<italic><gold><player> <reset><yellow>joined the server!"
   left: "<italic><gold><player> <reset><yellow>left the server!"
+menu:
+  not_found: "<italic><red>Menu '<menu>' not found"
 bank:
   not_enough: "<italic><yellow>You do not have enough money in your account"
   deposit_successful: "<italic><yellow>You deposited <coins>coins to your account"
   withdraw_successful: "<italic><yellow>You withdrew <coins>coins from your account"
 
 message:
-  sent: "<italic><yellow>You >> <receiver>: <message>"
-  received: "<italic><yellow><sender> >> You: <message>"
+  sent: "<bold><gray>You >> <italic><gold><receiver><gray> : <reset><italic><gray><message>"
+  received: "<bold><gold><sender> <gray>>> <italic>You : <reset><italic><gray><message>"
   usage: "<italic><yellow>Usage: <reset><gold>/message <green><player> <yellow><message>"

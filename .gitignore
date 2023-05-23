@@ -116,5 +116,7 @@ run/
 server/*
 !server/plugins
 !server/start.bat
+!server/start.sh
 !server/eula.txt
 !server/*.jar
+!server/server.properties

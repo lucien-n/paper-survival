@@ -1,0 +1,1 @@
+java -jar -Xms768M -Xmx768M paper-1_19_4-538.jar -nogui

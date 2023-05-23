@@ -3,37 +3,61 @@ package me.scaffus.survival.player
 import me.scaffus.survival.Survival
 import org.bukkit.Bukkit
 import java.util.*
-import org.bukkit.entity.Player as BukkitPlayer
+import org.bukkit.entity.Player
 
 class PlayerManager(private val plugin: Survival) {
-    fun loadPlayer(bukkitPlayer: BukkitPlayer) {
-        val uuid = bukkitPlayer.uniqueId
+    private val players = HashMap<UUID, SPlayer>()
+
+    fun loadPlayer(p: Player) {
+        val uuid = p.uniqueId
+        plugin.db.createPlayer(p)
         val bankAccount = loadBankAccount(uuid)
-        plugin.data.setPlayer(uuid, SPlayer(uuid, bankAccount))
+        setPlayer(uuid, SPlayer(plugin, p, bankAccount))
     }
 
     fun loadOnlinePlayers() {
-        for (p: BukkitPlayer in Bukkit.getOnlinePlayers()) {
+        for (p: Player in Bukkit.getOnlinePlayers()) {
             loadPlayer(p)
         }
     }
 
     private fun loadBankAccount(uuid: UUID): BankAccount {
-        var bankAccount = plugin.db.loadPlayerBankAccount(uuid)
-        if (bankAccount == null) {
-            plugin.logger.info("$uuid doesn't have a bank account")
-            bankAccount = BankAccount(uuid, 0.0)
-        }
-        return bankAccount
+        val bankAccount = BankAccount(uuid, 0.0)
+        return plugin.db.loadPlayerBankAccount(uuid) ?: bankAccount
     }
 
-    fun savePlayer(bukkitPlayer: BukkitPlayer) {
+    fun savePlayer(bukkitPlayer: Player) {
         val uuid = bukkitPlayer.uniqueId
-        val player = plugin.data.getPlayer(uuid)
+        val player = getPlayer(uuid)
         if (player == null) {
             plugin.logger.info("Error while saving $uuid : Player not found")
             return
         }
         plugin.db.savePlayerBankAccount(uuid, player.bankAccount)
     }
+
+    fun getPlayer(name: String): SPlayer? {
+        return getPlayer(Bukkit.getPlayer(name) ?: return null)
+    }
+
+    fun getPlayer(uuid: UUID): SPlayer? {
+        return players[uuid]
+    }
+
+    fun getPlayer(p: Player): SPlayer? {
+        return players[p.uniqueId]
+    }
+
+    fun getPlayers(): List<SPlayer> {
+        return players.values.toList()
+    }
+
+    fun getBankAccount(uuid: UUID): BankAccount {
+        return players[uuid]!!.bankAccount
+    }
+
+    fun setPlayer(uuid: UUID, player: SPlayer) {
+        players[uuid] = player
+    }
+
 }
