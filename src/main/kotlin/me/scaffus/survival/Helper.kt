@@ -110,11 +110,13 @@ class Helper(private val plugin: Survival) {
         val amount: Int = (config.get("amount") ?: 1) as Int
         val lore: Array<String> = config.getStringList("lore").toTypedArray()
         val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
+        val itemMeta = itemStack.itemMeta
 
         val customModelData = config.getInt("custom_model_data")
         if (customModelData != 0)
-            itemStack.itemMeta?.setCustomModelData(customModelData)
+            itemMeta.setCustomModelData(customModelData)
 
+        itemStack.itemMeta = itemMeta
 
         return itemStack
     }

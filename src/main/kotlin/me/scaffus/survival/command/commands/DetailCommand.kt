@@ -17,6 +17,8 @@ class DetailCommand(private val plugin: Survival) : SCommand(plugin, "detail") {
         if (item.type.isAir)
             return p.sendMessage("You are not holding an item in your hand.").let { true }
 
+        p.sendMessage("")
+        p.sendMessage("#===========================")
         p.sendMessage("Item: ${item.type}")
         p.sendMessage("Lore: ${item.itemMeta.lore}")
         p.sendMessage("Amount: ${item.amount}")
@@ -24,8 +26,12 @@ class DetailCommand(private val plugin: Survival) : SCommand(plugin, "detail") {
         p.sendMessage("Data: ${item.data}")
 
         // Example: Get and display custom item metadata
-        item.getItemMeta()?.hasCustomModelData() ?: return true
-        p.sendMessage("Custom Model Data: ${item.itemMeta.customModelData}")
+        if (item.itemMeta != null) {
+            if (item.itemMeta.hasCustomModelData())
+                p.sendMessage("Custom Model Data: ${item.itemMeta.customModelData}")
+            p.sendMessage("Display Name: ${item.itemMeta.displayName}")
+        }
+        p.sendMessage("#===========================")
 
         return true
     }
