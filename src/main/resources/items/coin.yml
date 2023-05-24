@@ -1,7 +1,10 @@
 name: "<bold><gold>Coin"
-material: SUNFLOWER
-amount: 16
+material: GOLD_NUGGET
 custom_model_data: 100
+flags:
+  - UNPLACEABLE
+  - UNCRAFTABLE
+  - UNINGREDIENTABLE
 lore:
   - "<italic><yellow>Currency"
   - "<italic><gray>You can deposit coins to your bank account"

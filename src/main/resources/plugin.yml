@@ -8,9 +8,6 @@ commands:
   openmenu:
     aliases: [ "om", "omenu", "openm" ]
     description: Opens the specified menu
-  reloadmenus:
-    aliases: [ "rm", "rmenus", "reloadm" ]
-    description: Reloads all menus
   listmenus:
     aliases: [ "lm", "lmenus", "listm" ]
     description: Lists all menus

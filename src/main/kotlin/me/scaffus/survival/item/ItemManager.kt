@@ -37,7 +37,10 @@ class ItemManager(private val plugin: Survival) {
 
         val config = plugin.helper.loadConfig(itemConfigFile)
         val itemStack = plugin.helper.getItemFromConfigSection(config)
-        items[itemName] = SItem(plugin, itemName, itemStack)
+
+        val flags = config.getStringList("flags")
+
+        items[itemName] = SItem(plugin, itemName, itemStack, flags)
     }
 
     fun generateItemsFromConfigs() {

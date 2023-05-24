@@ -116,6 +116,10 @@ class Helper(private val plugin: Survival) {
         if (customModelData != 0)
             itemMeta.setCustomModelData(customModelData)
 
+        val flags = config.getStringList("flags")
+        if (flags.isNotEmpty())
+            addFlags(itemStack, flags.toSet())
+
         itemStack.itemMeta = itemMeta
 
         return itemStack
