@@ -11,8 +11,8 @@ class DetailCommand(private val plugin: Survival) : SCommand(plugin, "detail") {
         if (sender !is Player)
             return plugin.helper.sendMessage(sender, "player_only").let { true }
 
-        val p = plugin.playerManager.getPlayer(sender) ?: return true
-        val item = p.player.inventory.itemInMainHand
+        val p = sender as Player
+        val item = p.inventory.itemInMainHand
 
         if (item.type.isAir)
             return p.sendMessage("You are not holding an item in your hand.").let { true }
@@ -24,8 +24,8 @@ class DetailCommand(private val plugin: Survival) : SCommand(plugin, "detail") {
         p.sendMessage("Data: ${item.data}")
 
         // Example: Get and display custom item metadata
-        val customModelData = item.getItemMeta()?.customModelData
-        p.sendMessage("Custom Model Data: $customModelData")
+        item.getItemMeta()?.hasCustomModelData() ?: return true
+        p.sendMessage("Custom Model Data: ${item.itemMeta.customModelData}")
 
         return true
     }
