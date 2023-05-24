@@ -137,7 +137,7 @@ abstract class SMenu(
     }
 
     protected fun handleItemClick(p: Player, slotPosition: Int) {
-        val player = plugin.getSPlayer(p.uniqueId) ?: return
+        val player = plugin.playerManager.getPlayer(p.uniqueId) ?: return
         getSlot(slotPosition)?.invokeActions(player)
     }
 }

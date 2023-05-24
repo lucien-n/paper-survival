@@ -14,10 +14,21 @@ commands:
   listmenus:
     aliases: [ "lm", "lmenus", "listm" ]
     description: Lists all menus
+  item:
+    aliases: [ "im" ]
+    description: Gives the specified item
+  listitems:
+    aliases: [ "li", "litems", "listi" ]
+    description: Lists all items
+  reloadconfigs:
+    aliases: [ "rc", "rconfigs", "reloadc" ]
+    description: Reloads all configs
+  detail:
+    description: Shows the item in hand's details
   bank:
     description: Opens the bank menu
   message:
-    aliases: ["msg", "w", "tell"]
+    aliases: [ "msg", "w", "tell" ]
     description: Send a private message to a player
 #    survival:
 #        description: Survival plugin

@@ -9,13 +9,13 @@ class BankMenu(private val plugin: Survival) : SMenu(
 ) {
     init {
         initFromConfig()
-        addSlotAction("deposit") { p: SPlayer ->
-            val amount = 1
-            p.bank.withdraw(amount).let { (success, message) -> if (!success) p.sendMessage(message, "amount:$amount") }
-        }
         addSlotAction("withdraw") { p: SPlayer ->
             val amount = 1
-            p.bank.deposit(amount).let { (success, message) -> if (!success) p.sendMessage(message, "amount:$amount") }
+            p.bank.withdraw(amount).let { (success, message) -> p.sendMessage(message, "amount:$amount") }
+        }
+        addSlotAction("deposit") { p: SPlayer ->
+            val amount = 1
+            p.bank.deposit(amount).let { (success, message) -> p.sendMessage(message, "amount:$amount") }
         }
     }
 }

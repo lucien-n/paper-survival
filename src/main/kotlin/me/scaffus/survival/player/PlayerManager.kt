@@ -2,8 +2,8 @@ package me.scaffus.survival.player
 
 import me.scaffus.survival.Survival
 import org.bukkit.Bukkit
-import java.util.*
 import org.bukkit.entity.Player
+import java.util.*
 
 class PlayerManager(private val plugin: Survival) {
     private val players = HashMap<UUID, SPlayer>()
@@ -21,8 +21,8 @@ class PlayerManager(private val plugin: Survival) {
         }
     }
 
-    private fun loadBankAccount(uuid: UUID): BankAccount {
-        val bankAccount = BankAccount(uuid, 0.0)
+    private fun loadBankAccount(uuid: UUID): SBankAccount {
+        val bankAccount = SBankAccount(uuid, 0.0)
         return plugin.db.loadPlayerBankAccount(uuid) ?: bankAccount
     }
 
@@ -52,7 +52,7 @@ class PlayerManager(private val plugin: Survival) {
         return players.values.toList()
     }
 
-    fun getBankAccount(uuid: UUID): BankAccount {
+    fun getBankAccount(uuid: UUID): SBankAccount {
         return players[uuid]!!.bank
     }
 

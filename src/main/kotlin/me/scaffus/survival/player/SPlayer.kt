@@ -5,11 +5,13 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class SPlayer(private val plugin: Survival, val player: Player, val bank: BankAccount) {
+class SPlayer(private val plugin: Survival, val player: Player, val bank: SBankAccount) {
     val uniqueId: UUID = player.uniqueId
     private var conversationPeer: SPlayer? = null
+
     var inventory: Inventory
         get() = player.inventory
         set(value) {
@@ -52,5 +54,10 @@ class SPlayer(private val plugin: Survival, val player: Player, val bank: BankAc
 
     fun updateInventory() {
         player.updateInventory()
+    }
+
+    fun give(itemStack: ItemStack) {
+        player.inventory.addItem(itemStack)
+        updateInventory()
     }
 }

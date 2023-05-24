@@ -2,7 +2,6 @@ package me.scaffus.survival.menu
 
 import me.scaffus.survival.Survival
 import me.scaffus.survival.player.SPlayer
-import org.bukkit.Material
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
@@ -84,37 +83,23 @@ class MenuManager(private val plugin: Survival) {
         val itemsConfig = config.getConfigurationSection("items") ?: return null
         val menuSlots: MutableList<Slot> = mutableListOf()
 
-        // Loop through each item slot in the configuration
         for (slotName in itemsConfig.getKeys(false)) {
             val itemConfig = itemsConfig.getConfigurationSection(slotName) ?: continue
 
-            // Get the slot(s) for the item
             val slots: List<Int> = when (val slotConfig = itemConfig.get("slot")) {
                 is Int -> listOf(slotConfig) // If it's an integer, convert it to a list
                 is List<*> -> slotConfig.filterIsInstance<Int>() // If it's a list, filter out the integers
                 else -> emptyList() // Default to an empty list if it's neither an int nor a list of int
             }
 
-            // Get the display name, material, amount, and lore for the item
-            val displayName = itemConfig.getString("name") ?: "<bold>Display Name"
-            val material: Material = Material.getMaterial(itemConfig.getString("material") ?: "STICK") ?: Material.STICK
-            val amount: Int = (itemConfig.get("amount") ?: 1) as Int
-            val lore: Array<String> = itemConfig.getStringList("lore").toTypedArray()
-            val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
+            val itemStack = plugin.helper.getItemFromConfigSection(itemConfig)
 
-            val customModelData = itemConfig.getInt("custom_model_data")
-            if (customModelData != 0)
-                itemStack.itemMeta?.setCustomModelData(customModelData)
-
-            // Parse slot actions
             val actions: List<(p: SPlayer) -> Unit> = parseItemAction(itemConfig)?.let { listOf(it) }
                 ?: emptyList()
 
-            // Apply slot to the menu
             menuSlots.add(Slot(slotName, slots, itemStack, *actions.toTypedArray()))
         }
 
-        // Get menu display name and size
         val menuDisplayName = config.getString("title") ?: "<bold>Menu Title"
         var size = config.getInt("size")
         if (size % 9 != 0) size = 27
@@ -171,13 +156,13 @@ class MenuManager(private val plugin: Survival) {
     fun generateMenusFromConfigs() {
         val menusDir = File(plugin.dataFolder, "menus")
         if (!menusDir.exists() || !menusDir.isDirectory) {
-            plugin.logger.warning("Menus directory not found!")
+            plugin.logger.warning("'menus' directory not found!")
             return
         }
 
         val menuConfigFiles = menusDir.listFiles { _, name -> name.endsWith(".yml") } ?: return
         if (menuConfigFiles.isEmpty()) {
-            plugin.logger.warning("No menu configs found!")
+            plugin.logger.warning("No menu config found!")
             return
         }
 

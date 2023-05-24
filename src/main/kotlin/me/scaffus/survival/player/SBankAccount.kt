@@ -3,7 +3,7 @@ package me.scaffus.survival.player
 import me.scaffus.survival.SResult
 import java.util.*
 
-class BankAccount(private val uuid: UUID, private var balance: Double) {
+class SBankAccount(private val uuid: UUID, private var balance: Double) {
     fun withdraw(amount: Number): SResult {
         val withdrawAmount = amount.toDouble()
 

@@ -1,0 +1,8 @@
+name: "<bold><gold>Coin"
+material: SUNFLOWER
+amount: 16
+custom_data_model: 100
+lore:
+  - "<italic><yellow>Currency"
+  - "<italic><gray>You can deposit coins to your bank account"
+  - "<italic><gray>/bank"

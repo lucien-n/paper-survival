@@ -105,12 +105,18 @@ class Helper(private val plugin: Survival) {
     fun getItemFromConfigSection(config: ConfigurationSection?): ItemStack {
         if (config == null) return ItemStack(Material.AIR)
 
-        val material = Material.getMaterial(config.getString("material") ?: "AIR") ?: Material.AIR
-        val amount = (config.get("amount") ?: 1) as Int
-        val name = config.getString("name")!!
-        val lore = config.getStringList("lore").toTypedArray()
+        val displayName = config.getString("name") ?: "<bold>Display Name"
+        val material: Material = Material.getMaterial(config.getString("material") ?: "STICK") ?: Material.STICK
+        val amount: Int = (config.get("amount") ?: 1) as Int
+        val lore: Array<String> = config.getStringList("lore").toTypedArray()
+        val itemStack = plugin.helper.createItem(material, amount, displayName, lore)
 
-        return createItem(material, amount, name, lore)
+        val customModelData = config.getInt("custom_model_data")
+        if (customModelData != 0)
+            itemStack.itemMeta?.setCustomModelData(customModelData)
+
+
+        return itemStack
     }
 
     fun getClassesFromPackage(

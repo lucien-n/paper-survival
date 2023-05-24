@@ -1,11 +1,10 @@
 package me.scaffus.survival.database
 
 import me.scaffus.survival.Survival
-import me.scaffus.survival.player.BankAccount
+import me.scaffus.survival.player.SBankAccount
 import org.bukkit.entity.Player
 import java.sql.Connection
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.*
 
@@ -52,18 +51,18 @@ class DatabaseGetterSetter(private val connection: Connection?, private val plug
         }
     }
 
-    fun loadPlayerBankAccount(uuid: UUID): BankAccount? {
+    fun loadPlayerBankAccount(uuid: UUID): SBankAccount? {
         val s = ps("SELECT * FROM players_bank WHERE UUID=?")
         s!!.setString(1, uuid.toString())
         val result = s.executeQuery()
         if (result.next()) {
             val balance = result.getDouble("balance")
-            return BankAccount(uuid, balance)
+            return SBankAccount(uuid, balance)
         }
         return null
     }
 
-    fun savePlayerBankAccount(uuid: UUID, bankAccount: BankAccount) {
+    fun savePlayerBankAccount(uuid: UUID, bankAccount: SBankAccount) {
         try {
             val s = ps("UPDATE players_bank SET balance=? WHERE UUID=?")
             s!!.setDouble(1, bankAccount.getBalance())
