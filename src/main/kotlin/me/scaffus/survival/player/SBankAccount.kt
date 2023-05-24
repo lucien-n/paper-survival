@@ -29,7 +29,7 @@ class BankAccount(private val uuid: UUID, private var balance: Double) {
 
         balance += depositAmount
 
-        return SResult(true, "Deposit successful")
+        return SResult(true, "bank.deposit_successful")
     }
 
     fun getBalance(): Double {

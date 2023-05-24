@@ -11,9 +11,9 @@ menu:
   not_found: "<italic><red>Menu '<menu>' not found"
 bank:
   no_negative: "<italic><red>You cannot enter a negative value"
-  insuficient_funds: "<italic><yellow>You do not have enough money in your account"
-  deposit_successful: "<italic><yellow>You deposited <amount> coins to your account"
-  withdraw_successful: "<italic><yellow>You withdrew <amount> coins from your account"
+  insuficient_funds: "<yellow>You do not have enough money in your account"
+  deposit_successful: "<yellow>You deposited <bold><gold><amount></bold><yellow> coin(s) to your account"
+  withdraw_successful: "<yellow>You withdrew <bold><gold><amount></bold><yellow> coin(s) from your account"
 
 message:
   sent: "<bold><gray>You >> <italic><gold><receiver><gray> : <reset><italic><gray><message>"
