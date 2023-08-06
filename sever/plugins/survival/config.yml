@@ -1,8 +1,0 @@
-prefix: "<gray><bold>[<reset><white>Vival<gray><bold>]"
-
-database:
-  host: localhost
-  port: 3306
-  user: minecraft
-  password: TaSqTQ2AfLwn&4a&rKZW
-  table: survival
